@@ -1,13 +1,49 @@
 
 <!DOCTYPE html>
-<html lang='bn'>
+<html lang="bn">
 <head>
-    <meta charset='UTF-8'>
-    <title>Monetag</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monetag.com</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <header>
+    <img src="logo.png" alt="Monetag Logo">
+    <nav>
+      <a href="#">হোম</a>
+      <a href="#">বিজ্ঞাপন</a>
+      <a href="#">যোগাযোগ</a>
+      <button class="lang-switch" onclick="switchLang()">EN/BN</button>
+    </nav>
+  </header>
+  <main id="main-content">
     <h1>স্বাগতম Monetag-এ!</h1>
-    <p>Developer: SHAWON IMTIAJ MAHI</p>
+    <p>বিজ্ঞাপন দেখে ইনকাম করুন খুব সহজেই।</p>
+    <button class="button">শুরু করুন</button>
+  </main>
+  <footer>
+    &copy; 2025 Monetag.com | Developed by <strong>SHAWON IMTIAJ MAHI</strong>
+  </footer>
+  <script>
+    let isBangla = true;
+    function switchLang() {
+      const content = document.getElementById('main-content');
+      if (isBangla) {
+        content.innerHTML = `
+          <h1>Welcome to Monetag!</h1>
+          <p>Earn money easily by watching ads.</p>
+          <button class="button">Get Started</button>
+        `;
+      } else {
+        content.innerHTML = `
+          <h1>স্বাগতম Monetag-এ!</h1>
+          <p>বিজ্ঞাপন দেখে ইনকাম করুন খুব সহজেই।</p>
+          <button class="button">শুরু করুন</button>
+        `;
+      }
+      isBangla = !isBangla;
+    }
+  </script>
 </body>
 </html>
