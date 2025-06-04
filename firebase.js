@@ -50,3 +50,21 @@ function logout() {
     window.location.href = "login.html";
   });
 }
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"; // এটা নতুন
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA9oQm1ITCmWz6fGQy6gAFr6ZrhP81BngI",
+  authDomain: "monetag-ec520.firebaseapp.com",
+  projectId: "monetag-ec520",
+  storageBucket: "monetag-ec520.appspot.com",
+  messagingSenderId: "243993316979",
+  appId: "1:243993316979:web:ff5b91a352d32856896406"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app); // এটাও নতুন
+
+export { auth, db };
