@@ -3,47 +3,63 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Monetag.com</title>
+  <title>Monetag</title>
   <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <header>
-    <img src="logo.png" alt="Monetag Logo">
-    <nav>
-      <a href="#">হোম</a>
-      <a href="#">বিজ্ঞাপন</a>
-      <a href="#">যোগাযোগ</a>
-      <button class="lang-switch" onclick="switchLang()">EN/BN</button>
-    </nav>
-  </header>
-  <main id="main-content">
-    <h1>স্বাগতম Monetag-এ!</h1>
-    <p>বিজ্ঞাপন দেখে ইনকাম করুন খুব সহজেই।</p>
-    <button class="button">শুরু করুন</button>
-  </main>
-  <footer>
-    &copy; 2025 Monetag.com | Developed by <strong>SHAWON IMTIAJ MAHI</strong>
-  </footer>
-  <script>
-    let isBangla = true;
-    function switchLang() {
-      const content = document.getElementById('main-content');
-      if (isBangla) {
-        content.innerHTML = `
-          <h1>Welcome to Monetag!</h1>
-          <p>Earn money easily by watching ads.</p>
-          <button class="button">Get Started</button>
-        `;
-      } else {
-        content.innerHTML = `
-          <h1>স্বাগতম Monetag-এ!</h1>
-          <p>বিজ্ঞাপন দেখে ইনকাম করুন খুব সহজেই।</p>
-          <button class="button">শুরু করুন</button>
-        `;
-      }
-      isBangla = !isBangla;
+  <!-- Firebase SDK -->
+  <script type="module">
+    // Firebase Import
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyA9oQm1ITCmWz6fGQy6gAFr6ZrhP81BngI",
+      authDomain: "monetag-ec520.firebaseapp.com",
+      projectId: "monetag-ec520",
+      storageBucket: "monetag-ec520.appspot.com",
+      messagingSenderId: "243993316979",
+      appId: "1:243993316979:web:ff5b91a352d32856896406"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Signup Function
+    window.signup = function () {
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(userCredential => alert("Signup successful!"))
+        .catch(error => alert(error.message));
+    }
+
+    // Login Function
+    window.login = function () {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+      signInWithEmailAndPassword(auth, email, password)
+        .then(userCredential => alert("Login successful!"))
+        .catch(error => alert(error.message));
     }
   </script>
+</head>
+
+<body>
+  <h1>স্বাগতম Monetag-এ!</h1>
+  <p>বিজ্ঞাপন দেখে ইনকাম করুন খুব সহজেই।</p>
+
+  <!-- Signup Form -->
+  <h2>Sign Up</h2>
+  <input type="email" id="signupEmail" placeholder="Email"><br>
+  <input type="password" id="signupPassword" placeholder="Password"><br>
+  <button onclick="signup()">Sign Up</button>
+
+  <!-- Login Form -->
+  <h2>Login</h2>
+  <input type="email" id="loginEmail" placeholder="Email"><br>
+  <input type="password" id="loginPassword" placeholder="Password"><br>
+  <button onclick="login()">Login</button>
+
+  <p>© 2025 Monetag.com | Developed by SHAWON IMTIAJ MAHI</p>
 </body>
 </html>
