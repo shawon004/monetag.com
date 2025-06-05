@@ -1,40 +1,34 @@
 
-<!DOCTYPE html>
-<html lang="bn">
+<!DOCTYPE html><html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <title>অ্যাডমিন উইথড্র প্যানেল</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>অ্যাডমিন উইথড্র রিকোয়েস্ট প্যানেল</title>
   <style>
     body {
       background-color: black;
       color: white;
-      font-family: sans-serif;
       text-align: center;
+      font-family: 'Arial', sans-serif;
     }
     table {
-      width: 90%;
+      width: 95%;
       margin: 20px auto;
       border-collapse: collapse;
+      background-color: #111;
     }
     th, td {
-      padding: 10px;
       border: 1px solid white;
+      padding: 10px;
     }
     button {
       padding: 5px 10px;
       margin: 2px;
-      background: green;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    .reject-btn {
-      background: red;
     }
   </style>
 </head>
 <body>
-  <h1>💼 অ্যাডমিন উইথড্র রিকোয়েস্ট প্যানেল</h1>
+  <h2>💼 অ্যাডমিন উইথড্র রিকোয়েস্ট প্যানেল</h2>
   <table>
     <thead>
       <tr>
@@ -47,8 +41,46 @@
     <tbody id="requestTable">
       <tr><td colspan="4">লোড হচ্ছে...</td></tr>
     </tbody>
-  </table>
+  </table>  <script type="module">
+    import { db } from './firebase.js';
+    import {
+      collection, getDocs, updateDoc, doc
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  <script type="module" src="./admin.js"></script>
-</body>
+    async function loadRequests() {
+      const table = document.getElementById("requestTable");
+      table.innerHTML = "";
+      const snapshot = await getDocs(collection(db, "windowrequest"));
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const id = docSnap.id;
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${data.email}</td>
+          <td>${data.amount} টাকা</td>
+          <td>${data.status}</td>
+          <td>
+            <button onclick="approveRequest('${id}')">Approve</button>
+            <button onclick="rejectRequest('${id}')">Reject</button>
+          </td>
+        `;
+        table.appendChild(row);
+      });
+    }
+
+    window.approveRequest = async (id) => {
+      await updateDoc(doc(db, "windowrequest", id), { status: "Approved" });
+      alert("Approved ✅");
+      loadRequests();
+    };
+
+    window.rejectRequest = async (id) => {
+      await updateDoc(doc(db, "windowrequest", id), { status: "Rejected" });
+      alert("Rejected ❌");
+      loadRequests();
+    };
+
+    window.onload = loadRequests;
+  </script></body>
 </html>
