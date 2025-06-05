@@ -1,27 +1,109 @@
 
-// admin.js import { db } from './firebase.js'; import { collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<!DOCTYPE html><html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel | Monetag</title>
+  <style>
+    body {
+      background-color: #000;
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid white;
+      padding: 10px;
+    }
+    button {
+      margin: 5px;
+      padding: 5px 10px;
+      background-color: green;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h2>💼 অ্যাডমিন উইথড্র রিকোয়েস্ট প্যানেল</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ইমেইল</th>
+        <th>টাকা</th>
+        <th>স্ট্যাটাস</th>
+        <th>অ্যাকশন</th>
+      </tr>
+    </thead>
+    <tbody id="requestTable"></tbody>
+  </table>  <script type="module">
+    import { db, auth } from './firebase.js';
+    import {
+      collection,
+      getDocs,
+      doc,
+      updateDoc
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-async function loadRequests() { const table = document.getElementById("requestTable"); table.innerHTML = "";
+    // ✅ অ্যাডমিন চেক
+    auth.onAuthStateChanged(async user => {
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDocs(collection(db, 'users'));
+        const adminSnap = await userSnap.data();
 
-const snapshot = await getDocs(collection(db, "withdrawRequests")); snapshot.forEach((docSnap) => { const data = docSnap.data();
+        if (!adminSnap || adminSnap.role !== "Admin") {
+          alert("শুধুমাত্র অ্যাডমিন প্রবেশ করতে পারবে।");
+          window.location.href = "index.html";
+        }
+      } else {
+        alert("লগইন করুন আগে।");
+        window.location.href = "index.html";
+      }
+    });
 
-const row = document.createElement("tr");
-row.innerHTML = `
-  <td>${data.email}</td>
-  <td>${data.amount} টাকা</td>
-  <td>${data.status}</td>
-  <td>
-    <button onclick="approveRequest('${docSnap.id}')">Approve</button>
-    <button onclick="rejectRequest('${docSnap.id}')">Reject</button>
-  </td>
-`;
-table.appendChild(row);
+    async function loadRequests() {
+      const snapshot = await getDocs(collection(db, "withdraw"));
+      const table = document.getElementById("requestTable");
+      table.innerHTML = "";
 
-}); }
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${data.email}</td>
+          <td>${data.amount} টাকা</td>
+          <td>${data.status}</td>
+          <td>
+            <button onclick="approveRequest('${docSnap.id}')">Approve</button>
+            <button onclick="rejectRequest('${docSnap.id}')">Reject</button>
+          </td>
+        `;
+        table.appendChild(row);
+      });
+    }
 
-window.approveRequest = async (id) => { await updateDoc(doc(db, "withdrawRequests", id), { status: "approved" }); alert("Approved!"); loadRequests(); };
+    window.approveRequest = async id => {
+      const ref = doc(db, "withdraw", id);
+      await updateDoc(ref, { status: "Approved" });
+      alert("Approved!");
+      loadRequests();
+    };
 
-window.rejectRequest = async (id) => { await updateDoc(doc(db, "withdrawRequests", id), { status: "rejected" }); alert("Rejected!"); loadRequests(); };
+    window.rejectRequest = async id => {
+      const ref = doc(db, "withdraw", id);
+      await updateDoc(ref, { status: "Rejected" });
+      alert("Rejected!");
+      loadRequests();
+    };
 
-window.onload = loadRequests;
-
+    window.onload = loadRequests;
+  </script></body>
+</html>
