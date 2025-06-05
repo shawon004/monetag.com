@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="dashboard.js"></script>
+</head>
+<body>
+  <h2>স্বাগতম ড্যাশবোর্ডে!</h2>
+  <p id="balance">লোড হচ্ছে...</p>
+  <input type="text" id="refLink" readonly />
+  <button id="withdrawBtn" onclick="withdraw()" disabled>Withdraw করুন</button>
+  <button onclick="logout()">Logout</button>
+</body>
+</html>
