@@ -2,64 +2,37 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Monetag</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- Firebase SDK -->
-  <script type="module">
-    // Firebase Import
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-    // Firebase Config
-    const firebaseConfig = {
-      apiKey: "AIzaSyA9oQm1ITCmWz6fGQy6gAFr6ZrhP81BngI",
-      authDomain: "monetag-ec520.firebaseapp.com",
-      projectId: "monetag-ec520",
-      storageBucket: "monetag-ec520.appspot.com",
-      messagingSenderId: "243993316979",
-      appId: "1:243993316979:web:ff5b91a352d32856896406"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // Signup Function
-    window.signup = function () {
-      const email = document.getElementById("signupEmail").value;
-      const password = document.getElementById("signupPassword").value;
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(userCredential => alert("Signup successful!"))
-        .catch(error => alert(error.message));
-    }
-
-    // Login Function
-    window.login = function () {
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
-      signInWithEmailAndPassword(auth, email, password)
-        .then(userCredential => alert("Login successful!"))
-        .catch(error => alert(error.message));
-    }
-  </script>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-  <h1>স্বাগতম Monetag-এ!</h1>
-  <p>বিজ্ঞাপন দেখে ইনকাম করুন খুব সহজেই।</p>
 
-  <!-- Signup Form -->
-  <h2>Sign Up</h2>
-  <input type="email" id="signupEmail" placeholder="Email"><br>
-  <input type="password" id="signupPassword" placeholder="Password"><br>
-  <button onclick="signup()">Sign Up</button>
+  <div class="container">
+    <h1>স্বাগতম Monetag-এ!</h1>
+    <p>বিজ্ঞাপন দেখে ইনকাম করুন খুব সহজেই।</p>
 
-  <!-- Login Form -->
-  <h2>Login</h2>
-  <input type="email" id="loginEmail" placeholder="Email"><br>
-  <input type="password" id="loginPassword" placeholder="Password"><br>
-  <button onclick="login()">Login</button>
+    <div class="form-box">
+      <h2>Sign Up</h2>
+      <input type="email" id="signupEmail" placeholder="Email" />
+      <input type="password" id="signupPassword" placeholder="Password" />
+      <button onclick="signup()">Sign Up</button>
+    </div>
 
-  <p>© 2025 Monetag.com | Developed by SHAWON IMTIAJ MAHI</p>
+    <div class="form-box">
+      <h2>Login</h2>
+      <input type="email" id="loginEmail" placeholder="Email" />
+      <input type="password" id="loginPassword" placeholder="Password" />
+      <button onclick="login()">Login</button>
+    </div>
+
+    <footer>
+      <p>© 2025 Monetag.com | Developed by SHAWON IMTIAJ MAHI</p>
+    </footer>
+  </div>
+
+  <!-- Firebase logic -->
+  <script type="module" src="firebase.js"></script>
 </body>
 </html>
