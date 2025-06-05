@@ -1,38 +1,40 @@
 
-<!DOCTYPE html><html lang="bn">
+<!DOCTYPE html>
+<html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel | Monetag</title>
+  <title>অ্যাডমিন উইথড্র প্যানেল</title>
   <style>
     body {
-      background-color: #000;
+      background-color: black;
       color: white;
       font-family: sans-serif;
       text-align: center;
-      padding: 20px;
     }
     table {
-      width: 100%;
+      width: 90%;
+      margin: 20px auto;
       border-collapse: collapse;
-      margin-top: 20px;
     }
     th, td {
-      border: 1px solid white;
       padding: 10px;
+      border: 1px solid white;
     }
     button {
-      margin: 5px;
       padding: 5px 10px;
-      background-color: green;
+      margin: 2px;
+      background: green;
       color: white;
       border: none;
-      border-radius: 5px;
+      cursor: pointer;
+    }
+    .reject-btn {
+      background: red;
     }
   </style>
 </head>
 <body>
-  <h2>💼 অ্যাডমিন উইথড্র রিকোয়েস্ট প্যানেল</h2>
+  <h1>💼 অ্যাডমিন উইথড্র রিকোয়েস্ট প্যানেল</h1>
   <table>
     <thead>
       <tr>
@@ -42,68 +44,11 @@
         <th>অ্যাকশন</th>
       </tr>
     </thead>
-    <tbody id="requestTable"></tbody>
-  </table>  <script type="module">
-    import { db, auth } from './firebase.js';
-    import {
-      collection,
-      getDocs,
-      doc,
-      updateDoc
-    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    <tbody id="requestTable">
+      <tr><td colspan="4">লোড হচ্ছে...</td></tr>
+    </tbody>
+  </table>
 
-    // ✅ অ্যাডমিন চেক
-    auth.onAuthStateChanged(async user => {
-      if (user) {
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDocs(collection(db, 'users'));
-        const adminSnap = await userSnap.data();
-
-        if (!adminSnap || adminSnap.role !== "Admin") {
-          alert("শুধুমাত্র অ্যাডমিন প্রবেশ করতে পারবে।");
-          window.location.href = "index.html";
-        }
-      } else {
-        alert("লগইন করুন আগে।");
-        window.location.href = "index.html";
-      }
-    });
-
-    async function loadRequests() {
-      const snapshot = await getDocs(collection(db, "withdraw"));
-      const table = document.getElementById("requestTable");
-      table.innerHTML = "";
-
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${data.email}</td>
-          <td>${data.amount} টাকা</td>
-          <td>${data.status}</td>
-          <td>
-            <button onclick="approveRequest('${docSnap.id}')">Approve</button>
-            <button onclick="rejectRequest('${docSnap.id}')">Reject</button>
-          </td>
-        `;
-        table.appendChild(row);
-      });
-    }
-
-    window.approveRequest = async id => {
-      const ref = doc(db, "withdraw", id);
-      await updateDoc(ref, { status: "Approved" });
-      alert("Approved!");
-      loadRequests();
-    };
-
-    window.rejectRequest = async id => {
-      const ref = doc(db, "withdraw", id);
-      await updateDoc(ref, { status: "Rejected" });
-      alert("Rejected!");
-      loadRequests();
-    };
-
-    window.onload = loadRequests;
-  </script></body>
+  <script type="module" src="./admin.js"></script>
+</body>
 </html>
