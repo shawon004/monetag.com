@@ -1,59 +1,21 @@
 
-// Firebase config (replace with your actual config)
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MSG_ID",
-  appId: "YOUR_APP_ID"
-};
+// firebase.js
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
+// Firebase Import
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// Signup function
-function signup() {
-  const email = document.getElementById('signup-email').value;
-  const password = document.getElementById('signup-password').value;
-  auth.createUserWithEmailAndPassword(email, password)
-    .then(userCredential => {
-      const uid = userCredential.user.uid;
-      const refParam = new URLSearchParams(window.location.search).get("ref");
-      localStorage.setItem("uid", uid);
-      if (refParam) {
-        localStorage.setItem("referred_by", refParam);
-      }
-      alert("সাইন আপ সফল!");
-      window.location.href = "dashboard.html";
-    })
-    .catch(error => alert("ভুল হয়েছে: " + error.message));
-}
-
-// Login function
-function login() {
-  const email = document.getElementById('login-email').value;
-  const password = document.getElementById('login-password').value;
-  auth.signInWithEmailAndPassword(email, password)
-    .then(userCredential => {
-      localStorage.setItem("uid", userCredential.user.uid);
-      window.location.href = "dashboard.html";
-    })
-    .catch(error => alert("ভুল হয়েছে: " + error.message));
-}
-
-// Logout function
-function logout() {
-  auth.signOut().then(() => {
-    localStorage.clear();
-    window.location.href = "login.html";
-  });
-}
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore"; // এটা নতুন
-
+// Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyA9oQm1ITCmWz6fGQy6gAFr6ZrhP81BngI",
   authDomain: "monetag-ec520.firebaseapp.com",
@@ -63,8 +25,63 @@ const firebaseConfig = {
   appId: "1:243993316979:web:ff5b91a352d32856896406"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app); // এটাও নতুন
+const db = getFirestore(app);
 
-export { auth, db };
+// Sign Up Function
+window.signup = () => {
+  const email = document.getElementById("signupEmail").value;
+  const password = document.getElementById("signupPassword").value;
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .then(async (userCredential) => {
+      const uid = userCredential.user.uid;
+      localStorage.setItem("uid", uid);
+
+      // Check for referral
+      const urlParams = new URLSearchParams(window.location.search);
+      const ref = urlParams.get("ref");
+
+      let balance = 0;
+
+      if (ref) {
+        const refDoc = doc(db, "users", ref);
+        const refSnap = await getDoc(refDoc);
+        if (refSnap.exists()) {
+          const currentBal = refSnap.data().balance || 0;
+          await setDoc(refDoc, { balance: currentBal + 1 }, { merge: true });
+        }
+      }
+
+      await setDoc(doc(db, "users", uid), {
+        email: email,
+        balance: balance
+      });
+
+      window.location.href = "dashboard.html";
+    })
+    .catch((error) => {
+      alert("সাইনআপে সমস্যা হয়েছে: " + error.message);
+    });
+};
+
+// Login Function
+window.login = () => {
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      const uid = userCredential.user.uid;
+      localStorage.setItem("uid", uid);
+      window.location.href = "dashboard.html";
+    })
+    .catch((error) => {
+      alert("লগইনে সমস্যা হয়েছে: " + error.message);
+    });
+};
+
+// Logout Function
+window.logout
